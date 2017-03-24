@@ -9,16 +9,16 @@ object Boot {
     val input = inputProvider.loadInput()
 
     // driver
-    val chars = io.Source
+    val result = io.Source
       .fromFile(input.inputFile)
       .getLines()
       .grouped(input.chunkSize)
       .zipWithIndex
-      .toParArray
+      .toParArray // parallel marchers run
       .flatMap(i => Matcher.matchAll(i._1, input.dictionary, i._2 * input.chunkSize))
       .groupBy(i => i.pattern)
       .map(i => (i._1, i._2.map(j => (j.lineOffset, j.charOffset))))
 
-    println(chars.mkString(System.lineSeparator()))
+    println(result.mkString(System.lineSeparator()))
   }
 }
