@@ -25,7 +25,7 @@ public class MatchingService {
         List<Future<List<contracts.Position>>> positions = new ArrayList<>();
 
         while (true) {
-            if (canSubmitTask()) continue;
+            if (!canSubmitTask()) continue;
             Chunk chunk = dataReader.readNextChunk();
             if (chunk.isEndOfFile) break;
             executor.submit(createMatchingTask(chunk));
