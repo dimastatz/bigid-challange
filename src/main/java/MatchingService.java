@@ -22,16 +22,16 @@ public class MatchingService {
 
 
     public Map<String, List<Position>> execute() throws InterruptedException {
-        List<Future<List<contracts.Position>>> positions = new ArrayList<>();
+        List<Future<List<contracts.Position>>> matchingTaskList = new ArrayList<>();
 
         while (true) {
             if (!canSubmitTask()) continue;
             Chunk chunk = dataReader.readNextChunk();
             if (chunk.isEndOfFile) break;
-            executor.submit(createMatchingTask(chunk));
+            matchingTaskList.add(executor.submit(createMatchingTask(chunk)));
         }
 
-        return positions
+        return matchingTaskList
                 .stream()
                 .map(this::getPosition)
                 .flatMap(Collection::stream)
