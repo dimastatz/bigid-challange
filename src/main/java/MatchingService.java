@@ -3,7 +3,6 @@ import contracts.Position;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
-
 import static java.util.stream.Collectors.toList;
 
 public class MatchingService {
@@ -11,7 +10,16 @@ public class MatchingService {
     private IMatcher matcher;
     private IDataReader dataReader;
     private ThreadPoolExecutor executor;
-    private ISettingsProvider settingProvider;
+
+    public MatchingService(IMatcher matcher,
+                           IDataReader dataReader,
+                           ISettingsProvider settingProvider) {
+        this.matcher = matcher;
+        this.dataReader = dataReader;
+        this.setting = settingProvider.readSettings();
+        this.executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(setting.degreeOfParallelism);
+    }
+
 
     public Map<String, List<Position>> execute() throws InterruptedException {
         List<Future<List<contracts.Position>>> positions = new ArrayList<>();
