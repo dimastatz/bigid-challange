@@ -25,7 +25,7 @@ public class MatchingService {
         List<Future<List<contracts.Position>>> positions = new ArrayList<>();
 
         while (true) {
-            if (isQueueFull()) continue;
+            if (canSubmitTask()) continue;
             Chunk chunk = dataReader.readNextChunk();
             if (chunk.isEndOfFile) break;
             executor.submit(createMatchingTask(chunk));
@@ -46,7 +46,7 @@ public class MatchingService {
         }
     }
 
-    private boolean isQueueFull() throws InterruptedException {
+    private boolean canSubmitTask() throws InterruptedException {
         if(executor.getActiveCount() >= setting.degreeOfParallelism){
             Thread.sleep(1000);
             return true;
